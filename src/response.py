@@ -20,14 +20,6 @@ ACK_BAD_ADDR = 0x02 # Неверный адрес
 ACK_BAD_CRC = 0x03 # Ошибка в crc
 ACK_BAD_PARAM = 0x04 # Ошибка в параметрах
 
-
-# Чтение файла с g-code
-def ReadGcodeFile(path: str) -> bytes:
-	with open(path, 'r', encoding='ascii') as f:
-		text = f.read()
-	return text
-
-
 # Разбиение на куски по 250 байт, ибо данных может быть больше, чем 250 байт, они же тогда будут отправляться не в одном пакете, а в нескольких
 def ChunkBytes(data: bytes, chunkSize: int=250):
 	for i in range(0, len(data), chunkSize):
@@ -45,6 +37,14 @@ def Crc8(data: bytes) -> int:
 			else:
 				crc = (crc << 1) & 0xFF
 	return crc
+
+
+# Преобразует список строк G-code в байтовый поток .Каждая строка заканчивается '\n'.
+def GcodeListToStr(gcodeLines: list[str]) -> bytes:
+    lines = []
+    for line in gcodeLines:
+        lines.append(line.rstrip("\r\n") + "\n")
+    return "".join(lines).encode("ascii")
 
 
 # Формирование ответного пакета
@@ -107,8 +107,7 @@ def ReadAckPacket(ser: serial.Serial, timeout: float = 0.05) -> Optional[int]:
 
 
 # Для инициализации отправки пакета можно вызывать эту функцию в ГУИ напрямую, передав параметры порта, пути до файла с g-code и baudrate
-def SendGcode(port: str, path: str, baudrate: int, chunkSize: int=250, retries: int=3):
-	print('\n<<<<UART...>>>>')
+def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=250, retries: int=3) -> bool:
 	# Инициализация UART
 	ser = serial.Serial(
 		port = port, # Получить из ГУИ
@@ -119,11 +118,8 @@ def SendGcode(port: str, path: str, baudrate: int, chunkSize: int=250, retries: 
 		timeout = 0.01
 		)
 
-	print('\n<<<<Чтение G-code....>>>>')
 	# Чтение файла с g-code
-	gcodeBytes = ReadGcodeFile(path)
-
-	print(f'\n<<<<G-code размер: {len(gcodeBytes)} байт>>>>')
+	gcodeBytes = GcodeListToStr(gcodeLines)
 
 	# Отправляем пакеты и проверяем ответ, а именно, чему равно поле ACK
 	sqn = 0
@@ -144,21 +140,17 @@ def SendGcode(port: str, path: str, baudrate: int, chunkSize: int=250, retries: 
 				time.sleep(0.02)
 				continue
 
-			elif ack == ACK_BAD_ADDR:
+			elif ack in (ACK_BAD_ADDR, ACK_BAD_PARAM):
 				ser.close()
-				raise RuntimeError('ACK_BAD_ADDR')
-
-			elif ack == ACK_BAD_PARAM:
-				ser.close()
-				raise RuntimeError('ACK_BAD_PARAM')
+				return False
 
 		if not success:
 			ser.close()
-			raise RuntimeError(f'Не удалось передать пакет SQN={sqn}')
+			return False
 
 		# При каждой неудачной попытке увеличивается SQN
 		sqn = (sqn + 1) & 0xFF
 		time.sleep(0.005)
 
-	print("\n<<<<Передача завершена>>>>")
 	ser.close()
+	return True
