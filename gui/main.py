@@ -7,9 +7,11 @@ from PIL import Image, ImageDraw
 import sys
 #import serial.tools.list_ports as get_list
 
-def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=250, retries: int=3) -> bool:
-    print(f"Sending G-codes: port={port}, baudrate={baudrate}; G-codes=\n{gcodeLines}")
-    return True
+from response import *
+# dummy implementation of SendGcode for testing GUI
+# def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=250, retries: int=3) -> bool:
+#     print(f"Sending G-codes: port={port}, baudrate={baudrate}; G-codes=\n{gcodeLines}")
+#     return True
 
 
 def confirm(parent=None, text="Точно?") -> bool:
@@ -68,12 +70,6 @@ class MainWindow(QMainWindow):
         pixmap = QPixmap(".field_img.png")
         self.scene.addPixmap(pixmap)
 
-        # data = img.tobytes("raw", "RGB")
-        # qimage = QImage(data, img.width, img.height, QImage.Format_RGB888)
-        # pixmap = QPixmap.fromImage(qimage)
-        # self.scene.addPixmap(pixmap)
-
-
     def GetCOMPorts(self):
         self.getPorts = QSerialPortInfo()
         ports = list(self.getPorts.availablePorts())
@@ -102,7 +98,7 @@ class MainWindow(QMainWindow):
         self.current_x = x
         self.current_y = y
         self.draw_img()
-        SendGcode(self.portsComboBox.currentText(), f"{self.mode} X{x} Y{y}", int(self.baudRateLineEdit.text()))
+        SendGcode(self.portsComboBox.currentText(), [f"{self.mode} X{x} Y{y}",], int(self.baudRateLineEdit.text()))
 
     def clicked_btn_calibrate(self):
         if not confirm(self, "Вы уверены, что хотите выполнить калибровку?"):
@@ -110,7 +106,7 @@ class MainWindow(QMainWindow):
         self.current_x: int = 0
         self.current_y: int = 0
         self.draw_img()
-        SendGcode(self.portsComboBox.currentText(), "G00 X0 Y0", int(self.baudRateLineEdit.text()))
+        SendGcode(self.portsComboBox.currentText(), ["G00 X0 Y0",], int(self.baudRateLineEdit.text()))
 
     def clicked_btn_clear_img(self):
         if not confirm(self, "Вы уверены, что хотите очистить картинку?"):
