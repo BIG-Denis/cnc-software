@@ -61,32 +61,6 @@
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="drawCircleButton">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>100</y>
-        <width>121</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Нарисовать круг</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="drawLineButton">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>50</y>
-        <width>121</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Нарисовать линию</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="portsLabel">
       <property name="geometry">
        <rect>
@@ -123,7 +97,7 @@
        <string>Введите Baud Rate </string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="btn_connect">
       <property name="geometry">
        <rect>
         <x>180</x>
@@ -136,7 +110,7 @@
        <string>Подключиться</string>
       </property>
      </widget>
-     <widget class="QGraphicsView" name="graphicsView">
+     <widget class="QGraphicsView" name="field_view">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -158,7 +132,7 @@
        </size>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="btn_g00">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -171,7 +145,7 @@
        <string>G00 Быстрое позиционирование</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="btn_g01">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -184,7 +158,7 @@
        <string>G01 Линейная интерполяция</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_4">
+     <widget class="QPushButton" name="btn_g02">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -197,7 +171,7 @@
        <string>G02 Круговая интерполяция по часовой стрелке</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_5">
+     <widget class="QPushButton" name="btn_g03">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -210,7 +184,7 @@
        <string>G03 Круговая интерполяция против часовой стрелки</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_6">
+     <widget class="QPushButton" name="btn_g90">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -223,7 +197,7 @@
        <string>G90 Абсолютная система координат</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_7">
+     <widget class="QPushButton" name="btn_g91">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -236,10 +210,10 @@
        <string>G91 Относительная система координат</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_8">
+     <widget class="QPushButton" name="btn_colebrate">
       <property name="geometry">
        <rect>
-        <x>170</x>
+        <x>20</x>
         <y>250</y>
         <width>211</width>
         <height>23</height>
@@ -247,6 +221,55 @@
       </property>
       <property name="text">
        <string>Калибровка (переместиться на 0,0)</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="mode_label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>290</y>
+        <width>211</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_clear_img">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>330</y>
+        <width>211</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Очистить картинку</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="radiusLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>340</y>
+        <width>113</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="radius_label">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>310</y>
+        <width>111</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Radius:</string>
       </property>
      </widget>
     </widget>
