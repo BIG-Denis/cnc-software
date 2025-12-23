@@ -110,7 +110,7 @@ class MainWindow(QMainWindow):
                     color = 'orange'
             if command[0] in ('hrz', 'vrt', 'slp'):
                 x1, y1, x2, y2 = command[1:]
-                draw.line((x1, y1, x2, y2), fill=color, width=2)
+                draw.line((x1, y1, x2, y2), fill=color, width=3)
             pass
         # current position
         if self.current_x is not None and self.current_y is not None:
