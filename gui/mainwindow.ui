@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>584</height>
+    <height>723</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,11 +20,11 @@
       <x>20</x>
       <y>40</y>
       <width>751</width>
-      <height>501</height>
+      <height>611</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -85,7 +85,7 @@
         <x>20</x>
         <y>150</y>
         <width>711</width>
-        <height>311</height>
+        <height>421</height>
        </rect>
       </property>
       <property name="readOnly">
@@ -163,7 +163,7 @@
     </widget>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Рисование командами</string>
+      <string>Рисование</string>
      </attribute>
      <widget class="QGraphicsView" name="paint_view">
       <property name="geometry">
@@ -204,22 +204,6 @@
       </property>
       <property name="text">
        <string>Картинка (можно тыкать):</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinbox_paint_degree">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>250</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>315</number>
-      </property>
-      <property name="singleStep">
-       <number>45</number>
       </property>
      </widget>
      <widget class="QLabel" name="label_7">
@@ -287,56 +271,11 @@
        <string>current_mode</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_8">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>250</y>
-        <width>231</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Угол в градусах:</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinbox_paint_len">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>280</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="minimum">
-       <number>0</number>
-      </property>
-      <property name="maximum">
-       <number>500</number>
-      </property>
-      <property name="singleStep">
-       <number>10</number>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_9">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>280</y>
-        <width>231</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Длина прямой (по x или y):</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_10">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>310</y>
+        <y>250</y>
         <width>231</width>
         <height>21</height>
        </rect>
@@ -349,13 +288,13 @@
       <property name="geometry">
        <rect>
         <x>260</x>
-        <y>310</y>
+        <y>250</y>
         <width>91</width>
         <height>21</height>
        </rect>
       </property>
       <property name="minimum">
-       <number>0</number>
+       <number>-500</number>
       </property>
       <property name="maximum">
        <number>500</number>
@@ -364,24 +303,11 @@
        <number>10</number>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_paint_execute_command">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>310</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Выполнить команду</string>
-      </property>
-     </widget>
      <widget class="QRadioButton" name="btn_radio_paint_ccw">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>370</y>
+        <y>280</y>
         <width>331</width>
         <height>21</height>
        </rect>
@@ -389,34 +315,8 @@
       <property name="text">
        <string>Дуга против часовой стрелки</string>
       </property>
-     </widget>
-     <widget class="QLabel" name="label_17">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>340</y>
-        <width>231</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Начальный угол дуги в градусах:</string>
-      </property>
-     </widget>
-     <widget class="QSpinBox" name="spinbox_paint_degree_arc">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>340</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="maximum">
-       <number>315</number>
-      </property>
-      <property name="singleStep">
-       <number>45</number>
+      <property name="autoExclusive">
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="btn_paint_hatch">
@@ -432,17 +332,20 @@
        <string>[ /// ] Заштриховать область</string>
       </property>
      </widget>
-     <widget class="QRadioButton" name="btn_radio_paint_ccw_2">
+     <widget class="QRadioButton" name="btn_radio_paint">
       <property name="geometry">
        <rect>
         <x>20</x>
         <y>190</y>
-        <width>331</width>
+        <width>121</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
        <string>Рисование</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
       </property>
      </widget>
      <widget class="QLabel" name="label_11">
@@ -455,10 +358,10 @@
        </rect>
       </property>
       <property name="text">
-       <string>Или введите настройки вручную:</string>
+       <string>Специальные настройки для рисования дуг:</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btn_paint_hatch_2">
+     <widget class="QPushButton" name="btn_paint_arc">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -475,7 +378,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>440</y>
+        <y>430</y>
         <width>711</width>
         <height>16</height>
        </rect>
@@ -484,295 +387,11 @@
        <string>Примечание: для рисования дуги все равно нужно задать настройки углов и радиуса вручную.</string>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab2">
-     <attribute name="title">
-      <string>Рисование в G-кодах</string>
-     </attribute>
-     <widget class="QGraphicsView" name="field_view">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>40</y>
-        <width>330</width>
-        <height>228</height>
-       </rect>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>330</width>
-        <height>228</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>330</width>
-        <height>228</height>
-       </size>
-      </property>
-      <property name="verticalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-      <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAlwaysOff</enum>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_g00">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>40</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>G00 Быстрое позиционирование</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_g01">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>70</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>G01 Линейная интерполяция</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_g02">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>100</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>G02 Круговая интерполяция по часовой стрелке</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_g03">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>130</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>G03 Круговая интерполяция против часовой стрелки</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_g90">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>180</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>G90 Абсолютная система координат</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_g91">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>210</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>G91 Относительная система координат</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_colebrate">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>290</y>
-        <width>151</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Калибровка (на 0,0)</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="mode_label">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>260</y>
-        <width>331</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>current_mode</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_clear_img">
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>330</y>
-        <width>151</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Очистить картинку</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="radiusLineEdit">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>330</y>
-        <width>131</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="radius_label">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>300</y>
-        <width>131</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Радиус (для G02 и G03):</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>10</y>
-        <width>331</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Выбор G-кода:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>10</y>
-        <width>331</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Нажимайте точку в этом виджете:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>280</y>
-        <width>331</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Или введите координаты вручную:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit_x">
-      <property name="geometry">
-       <rect>
-        <x>420</x>
-        <y>310</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_execute_command">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>350</y>
-        <width>331</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Выполнить команду</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>406</x>
-        <y>312</y>
-        <width>16</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>X:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit_y">
-      <property name="geometry">
-       <rect>
-        <x>610</x>
-        <y>310</y>
-        <width>121</width>
-        <height>22</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_5">
-      <property name="geometry">
-       <rect>
-        <x>596</x>
-        <y>312</y>
-        <width>16</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_16">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>380</y>
-        <width>131</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Прочитать из файла:</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="btn_select_file">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>410</y>
+        <y>520</y>
         <width>111</width>
         <height>23</height>
        </rect>
@@ -785,7 +404,7 @@
       <property name="geometry">
        <rect>
         <x>150</x>
-        <y>410</y>
+        <y>520</y>
         <width>581</width>
         <height>21</height>
        </rect>
@@ -794,17 +413,72 @@
        <string>Путь к файлу: файл не выбран.</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>490</y>
+        <width>711</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Или вместо всего этого просто прочитать G-коды из файла (они не отрисуются, но отправятся):</string>
+      </property>
+     </widget>
      <widget class="QPushButton" name="push_file_send">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>440</y>
+        <y>550</y>
         <width>111</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
        <string>Отправить</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_paint_calibrate">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>310</y>
+        <width>161</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Калибровка (на 0,0)</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_paint_clear_img">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>310</y>
+        <width>161</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Очистить картинку</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="btn_radio_snapping">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>190</y>
+        <width>191</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Привязка (для произвольных)</string>
+      </property>
+      <property name="autoExclusive">
+       <bool>false</bool>
       </property>
      </widget>
     </widget>
