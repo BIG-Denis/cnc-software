@@ -462,10 +462,23 @@
        </rect>
       </property>
       <property name="text">
-       <string>Привязка (для произвольных)</string>
+       <string>Привязка</string>
       </property>
       <property name="autoExclusive">
        <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn_paint_add_anchor_point">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>310</y>
+        <width>331</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Поставить якорную точку на текущей позиции</string>
       </property>
      </widget>
     </widget>

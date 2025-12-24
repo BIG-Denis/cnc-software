@@ -10,11 +10,13 @@ import copy
 import math
 #import serial.tools.list_ports as get_list
 
+
 # from response import *
 # dummy implementation of SendGcode and SendHex for testing GUI
 def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=250, retries: int=3) -> bool:
     print(f"Sending G-codes: port={port}, baudrate={baudrate}; G-codes={gcodeLines}")
     return True
+
 
 def SendHex(port: str, hexString: str, baudrate: int) -> bool:
     print(f"Sending HEX packet: port={port}, baudrate={baudrate}; packet={hexString}")
@@ -27,9 +29,74 @@ def nearest_anchor(x: int, y: int, anchors: set[tuple[int, int]]) -> tuple[int, 
     return min(anchors, key=lambda a: math.hypot(a[0] - x, a[1] - y))
 
 
-def get_gcode(mode: str, paint: bool, x: int, y: int) -> str:
+def get_gcode(mode: str, paint: bool, x: int, y: int, ccw: bool=False, radius:int=0) -> str:
+    if not paint:
+        return f'G00 X{x} Y{y}'
     if mode in ('hrz', 'vrt', 'slp'):
-        return f'G{"01" if paint else "00"} X{x} Y{y}'
+        return f'G01 X{x} Y{y}'
+    if mode == 'arc':
+        if ccw:
+            return f'G03 X{x} Y{y} R{radius}'
+        else:
+            return f'G02 X{x} Y{y} R{radius}'
+
+
+def draw_gcode_arc(parent, draw, x1: int, y1: int, x2: int, y2: int, r: int, ccw: bool, steps: int=330) -> bool:
+
+    def _get_arc_angle(a1: float, a2: float, ccw: bool):
+        if ccw:
+            if a2 < a1:
+                a2 += 2 * math.pi
+            return a2 - a1
+        else:
+            if a2 > a1:
+                a2 -= 2 * math.pi
+            return a1 - a2
+
+    dx = x2 - x1
+    dy = y2 - y1
+    distance = math.hypot(dx, dy)
+
+    if distance == 0:
+        return True
+
+    R = abs(r)
+    if distance > 2 * R:
+        alert(parent, "Дуга невозможна: расстояние больше диаметра!")
+        return False
+
+    mx = (x1 + x2) / 2
+    my = (y1 + y2) / 2
+    h = math.sqrt(R * R - (distance / 2) ** 2)
+    nx = -dy / distance
+    ny = dx / distance
+    centers = [
+        (mx + nx * h, my + ny * h),
+        (mx - nx * h, my - ny * h),
+    ]
+
+    candidates = []
+    for cx, cy in centers:
+        a1 = math.atan2(y1 - cy, x1 - cx)
+        a2 = math.atan2(y2 - cy, x2 - cx)
+        sweep = _get_arc_angle(a1, a2, ccw)
+        candidates.append((sweep, cx, cy, a1, a2))
+
+    if r > 0:
+        sweep, cx, cy, a1, a2 = min(candidates, key=lambda c: c[0])
+    else:
+        sweep, cx, cy, a1, a2 = max(candidates, key=lambda c: c[0])
+
+    prev = (x1, y1)
+    for i in range(1, steps + 1):
+        t = i / steps
+        angle = a1 + (sweep * t if ccw else -sweep * t)
+        x = cx + R * math.cos(angle)
+        y = cy + R * math.sin(angle)
+        draw.line([prev, (x, y)], fill="black", width=3)
+        prev = (x, y)
+
+    return True
 
 
 def confirm(parent=None, text="Точно?") -> bool:
@@ -74,11 +141,12 @@ class MainWindow(QMainWindow):
         self.btn_paint_vertical.clicked.connect(self.clicked_btn_mode_vrt)
         self.btn_paint_horizontal.clicked.connect(self.clicked_btn_mode_hrz)
         self.btn_paint_sloped.clicked.connect(self.clicked_btn_mode_slp)
+        self.btn_paint_arc.clicked.connect(self.clicked_btn_mode_arc)
         self.btn_pro_gcode_send.clicked.connect(self.clicked_btn_send_gcode)
         self.btn_pro_hex_send.clicked.connect(self.clicked_btn_send_hex)
         self.btn_select_file.clicked.connect(self.clicked_btn_select_file)
         self.btn_send_file.clicked.connect(self.clicked_btn_send_file)
-        # TBD
+        self.btn_paint_add_anchor_point.clicked.connect(self.clicked_btn_paint_add_anchor_point)
 
         self.mode: str = 'hrz'  # hrz, vrt, slp, htc, arc
         self.drawing: bool = self.btn_radio_paint.isChecked()
@@ -92,7 +160,7 @@ class MainWindow(QMainWindow):
 
         self.draw_img()
 
-    def draw_img(self, pre=None):
+    def draw_img(self, pre=None) -> bool:
         img = Image.new("RGB", (330, 228), "white")
         draw = ImageDraw.Draw(img)
         local_commands = copy.deepcopy(self.draw_commands)
@@ -109,8 +177,12 @@ class MainWindow(QMainWindow):
                 else:
                     color = 'orange'
             if command[0] in ('hrz', 'vrt', 'slp'):
-                x1, y1, x2, y2 = command[1:]
+                x1, y1, x2, y2, r, ccw = command[1:]
                 draw.line((x1, y1, x2, y2), fill=color, width=3)
+            if command[0] == 'arc':
+                x1, y1, x2, y2, r, ccw = command[1:]
+                if not draw_gcode_arc(self, draw, x1, y1, x2, y2, r, ccw):
+                    return False
             pass
         # current position
         if self.current_x is not None and self.current_y is not None:
@@ -119,6 +191,7 @@ class MainWindow(QMainWindow):
         img.save(".field_img.png")
         pixmap = QPixmap(".field_img.png")
         self.scene.addPixmap(pixmap)
+        return True
 
     def GetCOMPorts(self):
         self.getPorts = QSerialPortInfo()
@@ -144,6 +217,7 @@ class MainWindow(QMainWindow):
         # processing
         goto_x = x
         goto_y = y
+        # snapping
         if self.mode == 'hrz':
             goto_y = self.current_y
             if self.btn_radio_snapping.isChecked():
@@ -154,24 +228,24 @@ class MainWindow(QMainWindow):
             if self.btn_radio_snapping.isChecked():
                 nearest_x, nearest_y = nearest_anchor(x, y, self.anchors)
                 goto_y = nearest_y
-        if self.mode == 'slp' and self.btn_radio_snapping.isChecked():
+        if self.mode in ('slp', 'arc') and self.btn_radio_snapping.isChecked():
             goto_x, goto_y = nearest_anchor(goto_x, goto_y, self.anchors)
         self.Append(f"<<<< Движение на x={goto_x}, y={goto_y} >>>>\n")
         # pre-paint and confirm
-        self.draw_img(pre=(self.mode, self.current_x, self.current_y, goto_x, goto_y))  # pre-paint
+        if not self.draw_img(pre=(self.mode, self.current_x, self.current_y, goto_x, goto_y, int(self.spinbox_paint_radius.text()), self.btn_radio_paint_ccw.isChecked())):
+            return
         if not confirm(self, f"Вы уверены, что хотите выполнить это действие?"):
             self.draw_img()
             return
         # sending
-        # FIXME: send G-code not shit
-        if not SendGcode(self.portsComboBox.currentText(), [get_gcode(self.mode, self.btn_radio_paint.isChecked(), goto_x, goto_y),], int(self.baudRateLineEdit.text())):
+        if not SendGcode(self.portsComboBox.currentText(), [get_gcode(self.mode, self.btn_radio_paint.isChecked(), goto_x, goto_y, self.btn_radio_paint_ccw.isChecked(), int(self.spinbox_paint_radius.text())),], int(self.baudRateLineEdit.text())):
             alert(self, "Ошибка отправки! Проверьте подключение!")
             self.draw_img()
             return
         # draw if sent succesfully
-        self.g_codes.append(get_gcode(self.mode, self.btn_radio_paint.isChecked(), goto_x, goto_y))
+        self.g_codes.append(get_gcode(self.mode, self.btn_radio_paint.isChecked(), goto_x, goto_y, self.btn_radio_paint_ccw.isChecked(), int(self.spinbox_paint_radius.text())))
         if self.btn_radio_paint.isChecked():
-            self.draw_commands.append((self.mode, self.current_x, self.current_y, goto_x, goto_y))
+            self.draw_commands.append((self.mode, self.current_x, self.current_y, goto_x, goto_y, int(self.spinbox_paint_radius.text()), self.btn_radio_paint_ccw.isChecked()))
             # add anchor
             self.anchors.add((self.current_x, self.current_y))
             self.anchors.add((goto_x, goto_y))
@@ -220,6 +294,14 @@ class MainWindow(QMainWindow):
     def clicked_btn_mode_slp(self):
         self.mode = 'slp'
         self.mode_paint_label.setText(f'Произвольное перемещение')
+
+    def clicked_btn_mode_arc(self):
+        self.mode = 'arc'
+        self.mode_paint_label.setText(f'Перемещение по дуге')
+
+    def clicked_btn_paint_add_anchor_point(self):
+        alert(self, f"Добавлена якорная точка на координатах x={self.current_x} y={self.current_y}!")
+        self.anchors.add((self.current_x, self.current_y))
 
     def clicked_btn_select_file(self):
         self.file_gcodes, _ = QFileDialog.getOpenFileName(self, "Выберите файл", "", "Все файлы (*.*)")
