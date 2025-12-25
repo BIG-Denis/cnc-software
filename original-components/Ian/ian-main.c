@@ -45,12 +45,13 @@
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-
+// UART ring buffer
 static uint8_t  uart_ring[UART_RING_SIZE];
 static volatile uint16_t uart_head = 0;
 static volatile uint16_t uart_tail = 0;
 static uint8_t  uart_rx_byte;
 
+// Состояние конечного автомата парсинга
 static uint8_t fsm_state = 0;
 /*
   0 = WAIT_SYNC1
@@ -62,21 +63,26 @@ static uint8_t fsm_state = 0;
   6 = WAIT_CRC
 */
 
+// Буфер данных пакета
 static uint8_t data_buf[MAX_PACKET_LEN];
 static uint8_t data_cnt = 0;
 static uint8_t data_len_expected = 0;
 
+// Поля пакета
 static uint8_t pkt_len_total = 0;
 static uint8_t pkt_seq = 0;
 static uint8_t pkt_addr = 0;
 static uint8_t pkt_crc = 0;
 
+// Таймаут парсера
 static uint32_t last_byte_time = 0;
-static const uint32_t PARSER_TIMEOUT_MS = 10;
+static const uint32_t PARSER_TIMEOUT_MS = 25;
 
+// Команды верхнего уровня
 static uint8_t command_ready = 0;
 static uint8_t command_type = 0;
 static char    command_text[128];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,6 +90,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
+
+// Прототипы функций
 void parser_process_byte(uint8_t b);
 void uart_poll_process(void);
 void parser_check_timeout(void);
@@ -94,6 +102,7 @@ uint8_t crc8_calc(const uint8_t *data, uint8_t len);
 /* USER CODE BEGIN 0 */
 
 /* putchar → printf по UART1 */
+// Подмена putchar → UART
 #ifdef __GNUC__
   #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 #else
@@ -124,9 +133,8 @@ int main(void)
   MX_USART1_UART_Init();
 
   /* USER CODE BEGIN 2 */
-
+  // Инициализация(приветственное сообщение)
   HAL_UART_Receive_IT(&huart1, &uart_rx_byte, 1);
-
   printf("\r\n\r\n");
   printf("=============================================\r\n");
   printf("STM32 UART Packet Parser Started\r\n");
@@ -248,6 +256,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+// Заполнение буфера
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     if (huart->Instance == USART1)
@@ -262,6 +271,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         HAL_UART_Receive_IT(&huart1, &uart_rx_byte, 1);
     }
 }
+// Вытягивание данных из парсера
 void uart_poll_process(void)
 {
     uint8_t local_buf[UART_RING_SIZE];
@@ -278,6 +288,7 @@ void uart_poll_process(void)
         parser_process_byte(local_buf[i]);
     }
 }
+// Парсер
 void parser_process_byte(uint8_t b)
 {
 	last_byte_time = HAL_GetTick();
@@ -378,11 +389,11 @@ void parser_process_byte(uint8_t b)
 
             if (crc_calc == pkt_crc)
             {
-                printf("CRC OK ✅\r\n");
+                printf("CRC OK\r\n");
             }
             else
             {
-                printf("CRC FAIL ❌\r\n");
+                printf("CRC FAIL\r\n");
             }
             if (data_cnt >= 1)
             {
@@ -416,6 +427,7 @@ void parser_process_byte(uint8_t b)
             break;
     }
 }
+// Таймаут принятия данных
 void parser_check_timeout(void)
 {
     if (fsm_state != 0) //
@@ -431,6 +443,7 @@ void parser_check_timeout(void)
         }
     }
 }
+// CRC
 uint8_t crc8_calc(const uint8_t *data, uint8_t len)
 {
     uint8_t crc = 0x00;
