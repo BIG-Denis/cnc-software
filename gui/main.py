@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QGraphicsSce
 from PyQt5.QtSerialPort import QSerialPortInfo
 from PyQt5 import uic
 from PyQt5.QtCore import Qt, QObject, QEvent
-from PyQt5.QtGui import QTextCursor, QPixmap
+from PyQt5.QtGui import QTextCursor, QPixmap, QIcon
 from PIL import Image, ImageDraw
 import os
 import sys
@@ -203,6 +203,13 @@ class MainWindow(QMainWindow):
         self.paint_view.fitInView(self.scene.itemsBoundingRect(), Qt.KeepAspectRatio)
         self.mode_paint_label.setText(f'Горизонтальное перемещение')
         self.file_gcodes: str = ''
+
+        # set button icons
+        self.btn_paint_vertical.setIcon(QIcon("icons/vrt.png"))
+        self.btn_paint_horizontal.setIcon(QIcon("icons/hrz.png"))
+        self.btn_paint_sloped.setIcon(QIcon("icons/slp.png"))
+        self.btn_paint_hatch.setIcon(QIcon("icons/htc.png"))
+        self.btn_paint_arc.setIcon(QIcon("icons/arc.png"))
 
         self.btn_refresh.clicked.connect(self.GetCOMPorts)
         self.btn_dump_codes.clicked.connect(self.clicked_btn_dump_codes)
