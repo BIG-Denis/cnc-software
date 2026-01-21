@@ -15,10 +15,10 @@ POLY = 0x31 # x^8 + x^5 + x^4 + 1
 SYNC_1 = 0xAC # Синхрослово
 SYNC_2 = 0x53 # Синхрослово
 ADDR = 0x01 # В документе такой, мб другой будет на практике
-ACK_OK = 0x01 # Команда принята и декодирована
-ACK_BAD_ADDR = 0x02 # Неверный адрес
-ACK_BAD_CRC = 0x03 # Ошибка в crc
-ACK_BAD_PARAM = 0x04 # Ошибка в параметрах
+ACK_OK = 0x00 # Команда принята и декодирована
+ACK_BAD_ADDR = 0x01 # Неверный адрес
+ACK_BAD_CRC = 0x02 # Ошибка в crc
+ACK_BAD_PARAM = 0x03 # Ошибка в параметрах
 
 # Разбиение на куски по 250 байт, ибо данных может быть больше, чем 250 байт, они же тогда будут отправляться не в одном пакете, а в нескольких
 def ChunkBytes(data: bytes, chunkSize: int=250):
@@ -144,7 +144,7 @@ def SendHex(port: str, hexString: str, baudrate: int) -> bool:
 
 
 # Для инициализации отправки пакета можно вызывать эту функцию в ГУИ напрямую, передав параметры порта, пути до файла с g-code и baudrate
-def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=250, retries: int=3) -> bool:#
+def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=250, retries: int=3) -> bool:
 	# Инициализация UART
 	ser = serial.Serial(
 		port = port, # Получить из ГУИ
@@ -173,7 +173,7 @@ def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=25
 				success = True
 				break
 
-			if ack == ACK_BAD_CRC or ack is None:
+			elif ack == ACK_BAD_CRC or ack is None:
 				time.sleep(0.02)
 				continue
 
@@ -185,7 +185,7 @@ def SendGcode(port: str, gcodeLines: list[str], baudrate: int, chunkSize: int=25
 			ser.close()
 			return False
 
-		# При каждой неудачной попытке увеличивается SQN
+		# При каждой удачной попытке увеличивается SQN
 		sqn = (sqn + 1) & 0xFF
 		time.sleep(0.005)
 
